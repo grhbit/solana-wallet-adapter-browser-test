@@ -56,7 +56,7 @@ export class MemoryWalletAdapter<
     if (!this.connected) {
       throw new WalletNotConnectedError();
     }
-    return sign(message, this.keypair.secretKey);
+    return sign.detached(message, this.keypair.secretKey);
   }
 
   async signTransaction(transaction: Transaction): Promise<Transaction> {
