@@ -14,10 +14,10 @@ export type MemoryWalletAdapterConfig<T extends string> = {
   icon?: string;
 };
 
-const DEFAULT_WALLET_NAME = "MemoryWallet (Unsafe)" as const;
+export const MemoryWalletName = "MemoryWallet (Unsafe)" as const;
 
 export class MemoryWalletAdapter<
-  T extends string = typeof DEFAULT_WALLET_NAME
+  T extends string = typeof MemoryWalletName
 > extends BaseMessageSignerWalletAdapter {
   name: WalletName<T>;
   url: string;
@@ -29,7 +29,7 @@ export class MemoryWalletAdapter<
   constructor(opts: MemoryWalletAdapterConfig<T>) {
     super();
     this.keypair = opts.keypair;
-    this.name = (opts.name ?? DEFAULT_WALLET_NAME) as WalletName<T>;
+    this.name = (opts.name ?? MemoryWalletName) as WalletName<T>;
     this.url = opts.url ?? "/";
     this.icon = opts.icon ?? "/favicon.ico";
   }
