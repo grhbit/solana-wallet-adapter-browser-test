@@ -1,5 +1,5 @@
 {
-  "name": "solana-wallet-adapter-memory",
+  "name": "solana-wallet-adapter-browser-test",
   "version": "0.1.0",
   "description": "A solana wallet adapter for testing on browser",
   "keywords": [],

@@ -7,17 +7,17 @@ import {
 import type { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import { sign } from "tweetnacl";
 
-export type MemoryWalletAdapterConfig<T extends string> = {
+export type BrowserTestWalletAdapterConfig<T extends string> = {
   keypair: Keypair;
   name?: T;
   url?: string;
   icon?: string;
 };
 
-export const MemoryWalletName = "MemoryWallet (Unsafe)" as const;
+export const BrowserTestWalletName = "BrowserTestWallet (Unsafe)" as const;
 
-export class MemoryWalletAdapter<
-  T extends string = typeof MemoryWalletName
+export class BrowserTestWalletAdapter<
+  T extends string = typeof BrowserTestWalletName
 > extends BaseMessageSignerWalletAdapter {
   name: WalletName<T>;
   url: string;
@@ -26,10 +26,10 @@ export class MemoryWalletAdapter<
   publicKey: PublicKey | null = null;
   keypair: Keypair;
 
-  constructor(opts: MemoryWalletAdapterConfig<T>) {
+  constructor(opts: BrowserTestWalletAdapterConfig<T>) {
     super();
     this.keypair = opts.keypair;
-    this.name = (opts.name ?? MemoryWalletName) as WalletName<T>;
+    this.name = (opts.name ?? BrowserTestWalletName) as WalletName<T>;
     this.url = opts.url ?? "/";
     this.icon = opts.icon ?? "/favicon.ico";
   }

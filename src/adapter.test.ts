@@ -8,14 +8,14 @@ import {
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
-import { MemoryWalletAdapter, MemoryWalletName } from "./adapter";
+import { BrowserTestWalletAdapter, BrowserTestWalletName } from "./adapter";
 
 test("init with default config", () => {
   const keypair = Keypair.generate();
-  const adapter = new MemoryWalletAdapter({ keypair });
+  const adapter = new BrowserTestWalletAdapter({ keypair });
 
   expect(adapter.keypair).toStrictEqual(keypair);
-  expect(adapter.name).toStrictEqual(MemoryWalletName);
+  expect(adapter.name).toStrictEqual(BrowserTestWalletName);
   expect(adapter.url).toStrictEqual("/");
   expect(adapter.icon).toStrictEqual("/favicon.ico");
   expect(adapter.readyState).toStrictEqual(WalletReadyState.Loadable);
@@ -30,7 +30,7 @@ test("init with custom config", async () => {
   const icon =
     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=";
   const url = "https://thisis.invalid";
-  const adapter = new MemoryWalletAdapter({ keypair, name, icon, url });
+  const adapter = new BrowserTestWalletAdapter({ keypair, name, icon, url });
 
   expect(adapter.keypair).toStrictEqual(keypair);
   expect(adapter.name).toStrictEqual(name);
@@ -40,7 +40,7 @@ test("init with custom config", async () => {
 
 test("connected", async () => {
   const keypair = Keypair.generate();
-  const adapter = new MemoryWalletAdapter({ keypair });
+  const adapter = new BrowserTestWalletAdapter({ keypair });
 
   await adapter.connect();
 
@@ -52,7 +52,7 @@ test("connected", async () => {
 
 test("disconnected", async () => {
   const keypair = Keypair.generate();
-  const adapter = new MemoryWalletAdapter({ keypair });
+  const adapter = new BrowserTestWalletAdapter({ keypair });
 
   await adapter.connect();
   await adapter.disconnect();
@@ -65,7 +65,7 @@ test("disconnected", async () => {
 
 test("signMessage fails when not connected", async () => {
   const keypair = Keypair.generate();
-  const adapter = new MemoryWalletAdapter({ keypair });
+  const adapter = new BrowserTestWalletAdapter({ keypair });
 
   expect.assertions(1);
   try {
@@ -77,7 +77,7 @@ test("signMessage fails when not connected", async () => {
 
 test("signTransaction fails when not connected", async () => {
   const keypair = Keypair.generate();
-  const adapter = new MemoryWalletAdapter({ keypair });
+  const adapter = new BrowserTestWalletAdapter({ keypair });
 
   expect.assertions(1);
   try {
@@ -89,7 +89,7 @@ test("signTransaction fails when not connected", async () => {
 
 test("signAllTransactions fails when not connected", async () => {
   const keypair = Keypair.generate();
-  const adapter = new MemoryWalletAdapter({ keypair });
+  const adapter = new BrowserTestWalletAdapter({ keypair });
 
   expect.assertions(1);
   try {
@@ -106,7 +106,7 @@ test("signMessage success", async () => {
       0, 0, 0, 0, 0, 0, 0,
     ])
   );
-  const adapter = new MemoryWalletAdapter({ keypair });
+  const adapter = new BrowserTestWalletAdapter({ keypair });
   await adapter.connect();
 
   const message = Buffer.from("solana");
@@ -124,7 +124,7 @@ test("signMessage success", async () => {
 
 test("sendTransaction success", async () => {
   const keypair = Keypair.generate();
-  const adapter = new MemoryWalletAdapter({ keypair });
+  const adapter = new BrowserTestWalletAdapter({ keypair });
   await adapter.connect();
 
   const tx = new Transaction({
@@ -139,7 +139,7 @@ test("sendTransaction success", async () => {
 
 test("sendAllTransactions success", async () => {
   const keypair = Keypair.generate();
-  const adapter = new MemoryWalletAdapter({ keypair });
+  const adapter = new BrowserTestWalletAdapter({ keypair });
   await adapter.connect();
 
   const tx = new Transaction({
