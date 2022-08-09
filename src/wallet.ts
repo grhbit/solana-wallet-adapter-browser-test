@@ -4,7 +4,7 @@ import { sign } from "tweetnacl";
 export interface BrowserTestWallet {
   keypair: Keypair;
 
-  confirmConnecting: () => boolean;
+  confirmConnecting: () => Promise<boolean>;
 
   signMessage: (message: Uint8Array) => Promise<Uint8Array>;
   confirmSignMessage: (
@@ -26,7 +26,7 @@ export interface BrowserTestWallet {
 export abstract class BaseBrowserTestWallet implements BrowserTestWallet {
   abstract keypair: Keypair;
 
-  confirmConnecting = () => true;
+  confirmConnecting = async () => true;
 
   signMessage = async (message: Uint8Array) =>
     sign.detached(message, this.keypair.secretKey);

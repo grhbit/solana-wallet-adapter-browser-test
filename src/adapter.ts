@@ -1,11 +1,12 @@
 import type { WalletName } from "@solana/wallet-adapter-base";
 import {
   BaseMessageSignerWalletAdapter,
+  WalletConnectionError,
   WalletError,
   WalletNotConnectedError,
   WalletReadyState,
   WalletSignMessageError,
-  WalletSignTransactionError
+  WalletSignTransactionError,
 } from "@solana/wallet-adapter-base";
 import type { Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import type { BrowserTestWallet } from "./wallet";
@@ -36,6 +37,8 @@ export class BrowserTestWalletAdapter<
 
   publicKey: PublicKey | null = null;
   wallet: BrowserTestWallet;
+  
+  private _connecting: boolean = false;
 
   constructor(opts: BrowserTestWalletAdapterConfig<T>) {
     super();
@@ -53,12 +56,31 @@ export class BrowserTestWalletAdapter<
   }
 
   get connecting(): boolean {
-    return false;
+    return this._connecting;
   }
 
   async connect(): Promise<void> {
-    this.publicKey = this.wallet.keypair.publicKey;
-    this.emit("connect", this.wallet.keypair.publicKey);
+    try {
+      this._connecting = true;
+      if (await this.wallet.confirmConnecting()) {
+        this.publicKey = this.wallet.keypair.publicKey;
+        this.emit("connect", this.wallet.keypair.publicKey);
+      } else {
+        throw new WalletConnectionError("User rejected");
+      }
+    } catch (error) {
+      if (error instanceof WalletError) {
+        this.emit("error", error);
+      } else {
+        this.emit(
+          "error",
+          new WalletConnectionError((error as any)?.message, error)
+        );
+      }
+      throw error;
+    } finally {
+      this._connecting = false;
+    }
   }
 
   async disconnect(): Promise<void> {
@@ -79,6 +101,11 @@ export class BrowserTestWalletAdapter<
     } catch (error) {
       if (error instanceof WalletError) {
         this.emit("error", error);
+      } else {
+        this.emit(
+          "error",
+          new WalletSignMessageError((error as any)?.message, error)
+        );
       }
       throw error;
     }
@@ -99,6 +126,11 @@ export class BrowserTestWalletAdapter<
     } catch (error) {
       if (error instanceof WalletError) {
         this.emit("error", error);
+      } else {
+        this.emit(
+          "error",
+          new WalletSignTransactionError((error as any)?.message, error)
+        );
       }
       throw error;
     }
@@ -121,6 +153,11 @@ export class BrowserTestWalletAdapter<
     } catch (error) {
       if (error instanceof WalletError) {
         this.emit("error", error);
+      } else {
+        this.emit(
+          "error",
+          new WalletSignTransactionError((error as any)?.message, error)
+        );
       }
       throw error;
     }
