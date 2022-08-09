@@ -1,4 +1,4 @@
-import type { WalletName } from "@solana/wallet-adapter-base";
+import type { MessageSignerWalletAdapter, WalletName } from "@solana/wallet-adapter-base";
 import {
   BaseMessageSignerWalletAdapter,
   WalletConnectionError,
@@ -30,7 +30,7 @@ export const BrowserTestWalletName = "BrowserTestWallet (Unsafe)" as const;
 
 export class BrowserTestWalletAdapter<
   T extends string = typeof BrowserTestWalletName
-> extends BaseMessageSignerWalletAdapter {
+> extends BaseMessageSignerWalletAdapter implements MessageSignerWalletAdapter {
   name: WalletName<T>;
   url: string;
   icon: string;
