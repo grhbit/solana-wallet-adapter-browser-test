@@ -2,12 +2,24 @@
   "name": "solana-wallet-adapter-browser-test",
   "version": "0.1.0",
   "description": "A solana wallet adapter for testing on browser",
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "typescript",
+    "crypto",
+    "cryptocurrency",
+    "wallet",
+    "solana"
+  ],
+  "author": "Gwon Seonggwang <g.passcode@gmail.com>",
   "maintainers": [],
   "contributors": [],
-  "repository": {},
-  "bugs": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grhbit/solana-wallet-adapter-browser-test.git"
+  },
+  "bugs": {
+    "url": "https://github.com/grhbit/solana-wallet-adapter-browser-test/issues"
+  },
+  "license": "MIT",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -20,9 +32,9 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
-  "license": "MIT",
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --sourcemap --clean",
     "test": "jest",
