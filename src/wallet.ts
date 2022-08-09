@@ -1,5 +1,5 @@
 import type { Keypair, Transaction } from "@solana/web3.js";
-import { sign } from "tweetnacl";
+import tweetnacl from "tweetnacl";
 
 export interface BrowserTestWallet {
   keypair: Keypair;
@@ -29,7 +29,7 @@ export abstract class BaseBrowserTestWallet implements BrowserTestWallet {
   confirmConnecting = async () => true;
 
   signMessage = async (message: Uint8Array) =>
-    sign.detached(message, this.keypair.secretKey);
+    tweetnacl.sign.detached(message, this.keypair.secretKey);
   confirmSignMessage = async () => true;
 
   signTransaction = async (transaction: Transaction) =>
