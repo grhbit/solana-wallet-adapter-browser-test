@@ -9,15 +9,27 @@ import {
   TransactionInstruction,
 } from "@solana/web3.js";
 import { BrowserTestWalletAdapter, BrowserTestWalletName } from "./adapter";
+import { StaticBrowserTestWallet } from "./wallet";
 
-test("init with default config", () => {
+test("init with default config and keypair", () => {
   const keypair = Keypair.generate();
   const adapter = new BrowserTestWalletAdapter({ keypair });
 
-  expect(adapter.keypair).toStrictEqual(keypair);
   expect(adapter.name).toStrictEqual(BrowserTestWalletName);
   expect(adapter.url).toStrictEqual("/");
   expect(adapter.icon).toStrictEqual("/favicon.ico");
+  expect(adapter.readyState).toStrictEqual(WalletReadyState.Loadable);
+  expect(adapter.publicKey).toBeNull();
+  expect(adapter.connected).toStrictEqual(false);
+  expect(adapter.connecting).toStrictEqual(false);
+});
+
+test("init with custom wallet", () => {
+  const keypair = Keypair.generate();
+  const wallet = new StaticBrowserTestWallet(keypair);
+  const adapter = new BrowserTestWalletAdapter({ wallet });
+
+  expect(adapter.wallet).toStrictEqual(wallet);
   expect(adapter.readyState).toStrictEqual(WalletReadyState.Loadable);
   expect(adapter.publicKey).toBeNull();
   expect(adapter.connected).toStrictEqual(false);
@@ -32,7 +44,6 @@ test("init with custom config", async () => {
   const url = "https://thisis.invalid";
   const adapter = new BrowserTestWalletAdapter({ keypair, name, icon, url });
 
-  expect(adapter.keypair).toStrictEqual(keypair);
   expect(adapter.name).toStrictEqual(name);
   expect(adapter.url).toStrictEqual(url);
   expect(adapter.icon).toStrictEqual(icon);
