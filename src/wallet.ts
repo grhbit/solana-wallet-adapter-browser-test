@@ -7,10 +7,9 @@ export interface BrowserTestWallet {
   confirmConnecting: () => Promise<boolean>;
 
   signMessage: (message: Uint8Array) => Promise<Uint8Array>;
-  confirmSignMessage: (
-    signedMessage: Uint8Array,
-    message: Uint8Array
-  ) => Promise<boolean>;
+  confirmSignMessage: (message: Uint8Array) => Promise<boolean>;
+  beforeSignMessage?: (message: Uint8Array) => Promise<void>;
+  afterSignMessage?: (message: Uint8Array) => Promise<void>;
 
   signTransaction: (transaction: Transaction) => Promise<void>;
   confirmSignTransaction: (transaction: Transaction) => Promise<boolean>;
@@ -26,19 +25,20 @@ export interface BrowserTestWallet {
 export abstract class BaseBrowserTestWallet implements BrowserTestWallet {
   abstract keypair: Keypair;
 
-  confirmConnecting = async () => true;
-
   signMessage = async (message: Uint8Array) =>
     tweetnacl.sign.detached(message, this.keypair.secretKey);
-  confirmSignMessage = async () => true;
-
   signTransaction = async (transaction: Transaction) =>
     transaction.partialSign(this.keypair);
   signAllTransactions = async (transactions: Transaction[]) =>
     transactions.forEach((t) => t.partialSign(this.keypair));
 
-  confirmSignTransaction = async () => true;
-  confirmSignAllTransactions = async () => true;
+  confirmConnecting: BrowserTestWallet["confirmConnecting"] = async () => true;
+  confirmSignMessage: BrowserTestWallet["confirmSignMessage"] = async () =>
+    true;
+  confirmSignTransaction: BrowserTestWallet["confirmSignTransaction"] =
+    async () => true;
+  confirmSignAllTransactions: BrowserTestWallet["confirmSignAllTransactions"] =
+    async () => true;
 }
 
 export class StaticBrowserTestWallet extends BaseBrowserTestWallet {

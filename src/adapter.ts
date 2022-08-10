@@ -1,4 +1,7 @@
-import type { MessageSignerWalletAdapter, WalletName } from "@solana/wallet-adapter-base";
+import type {
+  MessageSignerWalletAdapter,
+  WalletName,
+} from "@solana/wallet-adapter-base";
 import {
   BaseMessageSignerWalletAdapter,
   WalletConnectionError,
@@ -29,15 +32,18 @@ export type BrowserTestWalletAdapterConfig<T extends string> =
 export const BrowserTestWalletName = "BrowserTestWallet (Unsafe)" as const;
 
 export class BrowserTestWalletAdapter<
-  T extends string = typeof BrowserTestWalletName
-> extends BaseMessageSignerWalletAdapter implements MessageSignerWalletAdapter {
+    T extends string = typeof BrowserTestWalletName
+  >
+  extends BaseMessageSignerWalletAdapter
+  implements MessageSignerWalletAdapter
+{
   name: WalletName<T>;
   url: string;
   icon: string;
 
   publicKey: PublicKey | null = null;
   wallet: BrowserTestWallet;
-  
+
   private _connecting: boolean = false;
 
   constructor(opts: BrowserTestWalletAdapterConfig<T>) {
@@ -93,8 +99,10 @@ export class BrowserTestWalletAdapter<
       if (!this.connected) {
         throw new WalletNotConnectedError();
       }
-      const signedMessage = await this.wallet.signMessage(message);
-      if (await this.wallet.confirmSignMessage(signedMessage, message)) {
+      if (await this.wallet.confirmSignMessage(message)) {
+        await this.wallet.beforeSignMessage?.(message);
+        const signedMessage = await this.wallet.signMessage(message);
+        await this.wallet.afterSignMessage?.(message);
         return signedMessage;
       }
       throw new WalletSignMessageError("User rejected");
