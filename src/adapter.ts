@@ -21,12 +21,14 @@ export type BrowserTestWalletAdapterConfig<T extends string> =
       name?: T;
       url?: string;
       icon?: string;
+      readyState?: WalletReadyState;
     }
   | {
       keypair: Keypair;
       name?: T;
       url?: string;
       icon?: string;
+      readyState?: WalletReadyState;
     };
 
 export const BrowserTestWalletName = "BrowserTestWallet (Unsafe)" as const;
@@ -55,11 +57,10 @@ export class BrowserTestWalletAdapter<
     this.name = (opts.name ?? BrowserTestWalletName) as WalletName<T>;
     this.url = opts.url ?? "/";
     this.icon = opts.icon ?? "/favicon.ico";
+    this.readyState = opts.readyState ?? WalletReadyState.Loadable;
   }
 
-  get readyState() {
-    return WalletReadyState.Loadable;
-  }
+  readonly readyState: WalletReadyState;
 
   get connecting(): boolean {
     return this._connecting;
