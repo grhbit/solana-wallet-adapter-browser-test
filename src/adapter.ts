@@ -7,6 +7,7 @@ import {
   WalletConnectionError,
   WalletError,
   WalletNotConnectedError,
+  WalletNotReadyError,
   WalletReadyState,
   WalletSignMessageError,
   WalletSignTransactionError,
@@ -67,7 +68,16 @@ export class BrowserTestWalletAdapter<
   }
 
   async connect(): Promise<void> {
+    if (this.connected || this.connecting) {
+      return;
+    }
     try {
+      if (
+        this.readyState !== WalletReadyState.Loadable &&
+        this.readyState !== WalletReadyState.Installed
+      ) {
+        throw new WalletNotReadyError();
+      }
       this._connecting = true;
       if (await this.wallet.confirmConnecting()) {
         this.publicKey = this.wallet.keypair.publicKey;
