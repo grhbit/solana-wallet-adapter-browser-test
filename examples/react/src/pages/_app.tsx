@@ -38,7 +38,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       new FakeWalletAdapter(),
       new PhantomWalletAdapter(),
     ],
-    [network]
+    []
   );
 
   return (

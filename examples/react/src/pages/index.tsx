@@ -29,7 +29,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     refreshBalance();
     return () => setBalanceUiAmountString(null);
-  }, [publicKey]);
+  }, [publicKey, refreshBalance]);
 
   const handleRequestAirdrop = useCallback(() => {
     if (publicKey) {
@@ -90,7 +90,7 @@ const Home: NextPage = () => {
     } else {
       toast.error("Your wallet does not support signTransaction.");
     }
-  }, [signTransaction]);
+  }, [connection, publicKey, signTransaction]);
 
   const handleSignAllTransactions = useCallback(() => {
     if (signAllTransactions) {
