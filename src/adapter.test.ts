@@ -17,7 +17,9 @@ test("init with default config and keypair", () => {
 
   expect(adapter.name).toStrictEqual(BrowserTestWalletName);
   expect(adapter.url).toStrictEqual("/");
-  expect(adapter.icon).toStrictEqual("/favicon.ico");
+  expect(adapter.icon).toStrictEqual(
+    "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+  );
   expect(adapter.readyState).toStrictEqual(WalletReadyState.Loadable);
   expect(adapter.publicKey).toBeNull();
   expect(adapter.connected).toStrictEqual(false);
@@ -39,8 +41,7 @@ test("init with custom wallet", () => {
 test("init with custom config", async () => {
   const keypair = Keypair.generate();
   const name = "Custom WalletName" as const;
-  const icon =
-    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=";
+  const icon = "/favicon.ico";
   const url = "https://thisis.invalid";
   const adapter = new BrowserTestWalletAdapter({ keypair, name, icon, url });
 
