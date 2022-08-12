@@ -8,6 +8,7 @@ import {
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
+import pkg from "../package.json";
 import { BrowserTestWalletAdapter, BrowserTestWalletName } from "./adapter";
 import { StaticBrowserTestWallet } from "./wallet";
 
@@ -16,7 +17,7 @@ test("init with default config and keypair", () => {
   const adapter = new BrowserTestWalletAdapter({ keypair });
 
   expect(adapter.name).toStrictEqual(BrowserTestWalletName);
-  expect(adapter.url).toStrictEqual("/");
+  expect(adapter.url).toMatch(pkg.homepage);
   expect(adapter.icon).toStrictEqual(
     "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
   );

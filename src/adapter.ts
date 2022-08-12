@@ -56,7 +56,7 @@ export class BrowserTestWalletAdapter<
         ? opts.wallet
         : new StaticBrowserTestWallet(opts.keypair);
     this.name = (opts.name ?? BrowserTestWalletName) as WalletName<T>;
-    this.url = opts.url ?? "/";
+    this.url = opts.url ?? "https://github.com/grhbit/solana-wallet-adapter-browser-test";
     // 1x1 transparent GIF image
     this.icon = opts.icon ?? "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
     this.readyState = opts.readyState ?? WalletReadyState.Loadable;
