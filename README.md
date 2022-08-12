@@ -2,6 +2,8 @@
 
 A solana wallet adapter for testing on browser.
 
+[Demo](https://grhbit.github.io/solana-wallet-adapter-browser-test/)
+
 ## Install
 
 ```sh
