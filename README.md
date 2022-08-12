@@ -7,7 +7,11 @@ A solana wallet adapter for testing on browser.
 ## Install
 
 ```sh
+$ npm install solana-wallet-adapter-browser-test
+# or yarn
 $ yarn add solana-wallet-adapter-browser-test
+# or pnpm
+$ pnpm add solana-wallet-adapter-browser-test
 ```
 
 ## Usage
