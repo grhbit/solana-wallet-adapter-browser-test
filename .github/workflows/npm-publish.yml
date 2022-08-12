@@ -1,0 +1,38 @@
+name: Publish on npm
+on:
+  release:
+    types:
+      - created
+jobs:
+  publish-npm:
+    environment: npm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Read package.json
+        run: |
+          echo "PACKAGE_NAME=$(jq -r .name package.json)" >> $GITHUB_ENV
+          echo "PACKAGE_VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
+      - name: Check tags
+        uses: actions/github-script@v6
+        id: tag
+        with:
+          result-encoding: string
+          script: |
+            const { GITHUB_REF_NAME, PACKAGE_NAME, PACKAGE_VERSION } = process.env;
+            if (`v${PACKAGE_VERSION}` !== GITHUB_REF_NAME) {
+              core.setFailed(`Tags match failed: v${PACKAGE_VERSION} != ${GITHUB_REF_NAME}`);
+            }
+            return `${PACKAGE_NAME}@${PACKAGE_VERSION}`;
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7.9.0
+      - uses: actions/setup-node@v3
+        with:
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Publish
+        run: pnpm publish --ignore-scripts --no-git-checks --access public --tag ${{ steps.tag.outputs.result }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
