@@ -6,11 +6,53 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { BrowserTestWalletAdapter } from "solana-wallet-adapter-browser-test";
 
 const Home: NextPage = () => {
-  const { signMessage, signTransaction, signAllTransactions, publicKey } =
-    useWallet();
+  const {
+    signMessage,
+    signTransaction,
+    signAllTransactions,
+    publicKey,
+    wallet,
+  } = useWallet();
   const { connection } = useConnection();
+
+  const [walletDownload, setWalletDownload] = useState<{
+    name: string;
+    url: string;
+  } | null>(null);
+
+  useEffect(() => {
+    if (wallet?.adapter instanceof BrowserTestWalletAdapter) {
+      const adapter = wallet.adapter;
+      const fn = () => {
+        adapter.wallet.keypair.then((keypair) => {
+          const data = Buffer.from(keypair.secretKey).toJSON().data;
+          const blob = new Blob([JSON.stringify(data)], {
+            type: "application/json",
+          });
+          const url = URL.createObjectURL(blob);
+          setWalletDownload({
+            name: `${keypair.publicKey.toBase58()}.json`,
+            url,
+          });
+        });
+      };
+      if (adapter.connected) {
+        fn();
+      } else {
+        adapter.once("connect", fn);
+      }
+    }
+    return () =>
+      setWalletDownload((download) => {
+        if (download?.url) {
+          URL.revokeObjectURL(download.url);
+        }
+        return null;
+      });
+  }, [wallet]);
 
   const [balanceUiAmountString, setBalanceUiAmountString] = useState<
     string | null
@@ -125,45 +167,63 @@ const Home: NextPage = () => {
       <main className="container mt-8">
         <h1 className="font-medium text-4xl">BrowserTest Wallet</h1>
 
-        <div className="inline-flex flex-col gap-2 max-w-xs mt-8">
-          <p>
-            RPC: {connection.rpcEndpoint}
-          </p>
+        <div className="inline-flex flex-col gap-2 mt-8">
+          <p>RPC: {connection.rpcEndpoint}</p>
           {publicKey !== null && <p>SOL ◎ {balanceUiAmountString}</p>}
           <div>
             <WalletMultiButton />
+            {walletDownload !== null && (
+              <div className="my-4 flex flex-col items-start gap-2 border-4 rounded p-4">
+                <p className="font-bold text-sm text-rose-700">
+                  You are currently using BrowserTest Wallet.
+                  <br />
+                  The keypair will be generated when you refresh the page.
+                  <br />
+                  Please be careful!!
+                </p>
+                <a
+                  className="border rounded px-4 py-2 font-medium text-rose-700 bg-gray-50 hover:bg-gray-100 inline-flex"
+                  href={walletDownload.url}
+                  download={walletDownload.name}
+                >
+                  Download Wallet
+                </a>
+              </div>
+            )}
           </div>
-          <Button
-            type="button"
-            onClick={handleRequestAirdrop}
-            disabled={publicKey === null}
-          >
-            Airdrop 0.01 SOL
-          </Button>
+          <div className="flex flex-col gap-2 max-w-xs">
+            <Button
+              type="button"
+              onClick={handleRequestAirdrop}
+              disabled={publicKey === null}
+            >
+              Airdrop 0.01 SOL
+            </Button>
 
-          <Button
-            type="button"
-            onClick={handleSignMessage}
-            disabled={publicKey === null}
-          >
-            Sign Message
-          </Button>
+            <Button
+              type="button"
+              onClick={handleSignMessage}
+              disabled={publicKey === null}
+            >
+              Sign Message
+            </Button>
 
-          <Button
-            type="button"
-            onClick={handleSignTransaction}
-            disabled={publicKey === null}
-          >
-            Sign a transaction
-          </Button>
+            <Button
+              type="button"
+              onClick={handleSignTransaction}
+              disabled={publicKey === null}
+            >
+              Sign a transaction
+            </Button>
 
-          <Button
-            type="button"
-            onClick={handleSignAllTransactions}
-            disabled={publicKey === null}
-          >
-            Sign all transactions
-          </Button>
+            <Button
+              type="button"
+              onClick={handleSignAllTransactions}
+              disabled={publicKey === null}
+            >
+              Sign all transactions
+            </Button>
+          </div>
         </div>
       </main>
     </div>
