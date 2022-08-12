@@ -2,7 +2,7 @@ import type { Keypair, Transaction } from "@solana/web3.js";
 import tweetnacl from "tweetnacl";
 
 export interface BrowserTestWallet {
-  keypair: Keypair;
+  keypair: Promise<Keypair>;
 
   confirmConnecting: () => Promise<boolean>;
 
@@ -23,14 +23,18 @@ export interface BrowserTestWallet {
 }
 
 export abstract class BaseBrowserTestWallet implements BrowserTestWallet {
-  abstract keypair: Keypair;
+  abstract keypair: Promise<Keypair>;
 
   signMessage = async (message: Uint8Array) =>
-    tweetnacl.sign.detached(message, this.keypair.secretKey);
+    this.keypair.then((keypair) =>
+      tweetnacl.sign.detached(message, keypair.secretKey)
+    );
   signTransaction = async (transaction: Transaction) =>
-    transaction.partialSign(this.keypair);
+    this.keypair.then((keypair) => transaction.partialSign(keypair));
   signAllTransactions = async (transactions: Transaction[]) =>
-    transactions.forEach((t) => t.partialSign(this.keypair));
+    this.keypair.then((keypair) =>
+      transactions.forEach((t) => t.partialSign(keypair))
+    );
 
   confirmConnecting: BrowserTestWallet["confirmConnecting"] = async () => true;
   confirmSignMessage: BrowserTestWallet["confirmSignMessage"] = async () =>
@@ -42,7 +46,9 @@ export abstract class BaseBrowserTestWallet implements BrowserTestWallet {
 }
 
 export class StaticBrowserTestWallet extends BaseBrowserTestWallet {
-  constructor(readonly keypair: Keypair) {
+  keypair: Promise<Keypair>
+  constructor(keypair: Keypair) {
     super();
+    this.keypair = Promise.resolve(keypair);
   }
 }

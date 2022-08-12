@@ -80,8 +80,9 @@ export class BrowserTestWalletAdapter<
       }
       this._connecting = true;
       if (await this.wallet.confirmConnecting()) {
-        this.publicKey = this.wallet.keypair.publicKey;
-        this.emit("connect", this.wallet.keypair.publicKey);
+        const keypair = await this.wallet.keypair;
+        this.publicKey = keypair.publicKey;
+        this.emit("connect", keypair.publicKey);
       } else {
         throw new WalletConnectionError("User rejected");
       }
