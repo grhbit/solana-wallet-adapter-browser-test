@@ -11,9 +11,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@solana/wallet-adapter-base": "^0.9.10",
-    "@solana/wallet-adapter-react": "^0.15.9",
-    "@solana/wallet-adapter-react-ui": "^0.9.12",
+    "@solana/wallet-adapter-base": "<0.9.14",
+    "@solana/wallet-adapter-react": "<0.15.16",
+    "@solana/wallet-adapter-react-ui": "<0.9.14",
     "@solana/wallet-adapter-wallets": "^0.17.2",
     "@solana/web3.js": "^1.53.0",
     "bs58": "^5.0.0",
