@@ -54,7 +54,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "@solana/wallet-adapter-base": "^0.9.10",
+    "@solana/wallet-adapter-base": "^0.9.14",
     "tweetnacl": "^1.0.3"
   },
   "peerDependencies": {

@@ -11,10 +11,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@solana/wallet-adapter-base": "<0.9.14",
-    "@solana/wallet-adapter-react": "<0.15.16",
-    "@solana/wallet-adapter-react-ui": "<0.9.14",
-    "@solana/wallet-adapter-wallets": "^0.17.2",
+    "@solana/wallet-adapter-base": "npm:@grhbit/wallet-adapter-base@^0.9.14",
+    "@solana/wallet-adapter-react": "npm:@grhbit/wallet-adapter-react@^0.15.16",
+    "@solana/wallet-adapter-react-ui": "npm:@grhbit/wallet-adapter-react-ui@^0.9.14",
+    "@solana/wallet-adapter-wallets": "npm:@grhbit/wallet-adapter-wallets@^0.18.3",
     "@solana/web3.js": "^1.53.0",
     "bs58": "^5.0.0",
     "next": "12.2.5",
